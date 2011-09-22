@@ -1,0 +1,186 @@
+package com.vday.core
+{
+	import com.carlcalderon.arthropod.Debug;
+	import com.vday.events.PaginationEvent;
+	import com.vday.events.ShellEvent;
+	
+	import flash.display.MovieClip;
+	import flash.events.Event;
+
+
+	public class Pagination extends MovieClip
+	{
+		private var _total				:Number;
+		private var _maxNumToPage		:Number;	
+		private var _numHolder			:MovieClip;
+		private var _leftArrow			:ArrowButton;
+		private var _rightArrow			:ArrowButton;
+		private var _cur_page			:Number = 0;
+		private var _total_pages		:Number = 0;
+		
+		
+		public function Pagination()
+		{
+			super();
+		}
+		
+		public function init(total:Number, maxNumToPage:Number):void
+		{
+			_total = total;
+			_maxNumToPage = maxNumToPage;
+			_total_pages = Math.ceil( _total / _maxNumToPage );
+			
+			this.addEventListener(Event.ADDED_TO_STAGE, _onAddedToStage, false, 0, true);
+		}
+		
+		
+		/*//
+		 *  COMMANDS
+	   //*/
+		public function show():void
+		{
+			this.visible = true;
+		}
+		
+		public function hide():void
+		{
+			this.visible = false;
+		}
+		
+		public function destroy():void
+		{
+			_leftArrow.removeEventListener(ShellEvent.BUTTON_CLICK, _onArrowClick);
+			_rightArrow.removeEventListener(ShellEvent.BUTTON_CLICK, _onArrowClick);
+			
+			while(_numHolder.numChildren)
+			{
+				var nb:NumberButton = _numHolder.getChildAt(0) as NumberButton;
+				nb.removeEventListener(ShellEvent.BUTTON_CLICK, _onNumberClick);
+				nb.destroy();
+				
+				_numHolder.removeChildAt(0);
+				nb = null;
+			}
+			
+			this.removeChild(_numHolder);
+			_numHolder = null;
+		}
+		
+		public function gotoPage(id:Number):void
+		{
+			_cur_page = id;
+			
+			_onNumberClick( new ShellEvent(ShellEvent.BUTTON_CLICK, {id:_cur_page}) );
+		}
+		
+		
+		/*////////////////////////////////////////////////////////////////////////////////////////////
+		 *  PRIVATE METHODS
+	   //*////////////////////////////////////////////////////////////////////////////////////////////
+		/*//
+		 *  COMMANDS
+	   //*/
+		private function _createArrows():void
+		{
+			_leftArrow = new ArrowButton();
+			_leftArrow.x = 0; _leftArrow.y = 0;
+			_leftArrow.addEventListener(ShellEvent.BUTTON_CLICK, _onArrowClick, false, 0, true);
+			_leftArrow.init(11, 14, 0x666666, "left");
+			_leftArrow.disable();
+			this.addChild(_leftArrow);
+			
+			_rightArrow = new ArrowButton();
+			_rightArrow.x = 10; _rightArrow.y = 0;
+			_rightArrow.addEventListener(ShellEvent.BUTTON_CLICK, _onArrowClick, false, 0, true);
+			_rightArrow.init(11, 14, 0x666666, "right");
+			this.addChild(_rightArrow);
+		}
+		
+		private function _createPageNumbers():void
+		{
+			_numHolder = new MovieClip;
+			this.addChild(_numHolder);
+			
+			var pages:Number = Math.ceil(_total / _maxNumToPage);
+			for(var i:uint=0; i<pages; i++)
+			{
+				var nb:NumberButton = new NumberButton();
+				nb.addEventListener(ShellEvent.BUTTON_CLICK, _onNumberClick, false, 0, true);
+				nb.init(i);
+				nb.x = _rightArrow.x + _rightArrow.width + ((nb.width+2) * i);
+				nb.y = -2;
+				
+				_numHolder.addChild(nb);
+			}
+		}
+	   	
+	   
+	   /*//
+		 *  CALLBACKS
+	   //*/
+	    private function _onAddedToStage($e:Event):void
+	    {
+			this.removeEventListener(Event.ADDED_TO_STAGE, _onAddedToStage);
+			
+			_createArrows();
+			_createPageNumbers();
+	    }
+	    
+	    private function _onNumberClick($e:ShellEvent):void
+	    {
+			for(var i:uint=0; i<_numHolder.numChildren; i++)
+			{
+				var nb:NumberButton = _numHolder.getChildAt(i) as NumberButton;
+				$e.objInfo.id != i ? nb.selected = false : nb.selected = true;
+			}
+			
+			_cur_page = $e.objInfo.id;
+			
+			if(_cur_page == _total_pages-1) 
+			{
+				_rightArrow.disable();
+				_leftArrow.enable();
+			}
+			
+			if(_cur_page == 0) 
+			{
+				_leftArrow.disable();
+				_rightArrow.enable();
+			}
+			
+			dispatchEvent( new PaginationEvent(PaginationEvent.GOTO_PAGE, {id:_cur_page}) );
+	    }
+	    
+	    private function _onArrowClick($e:ShellEvent):void
+	    {
+			var e:String;
+			
+			switch($e.objInfo.id)
+			{
+				case "left":
+					e = PaginationEvent.PREV_PAGE;
+					_cur_page--;
+					
+					if(_cur_page == 0) _leftArrow.disable();
+					if(_rightArrow.disabled) _rightArrow.enable();
+					break;
+				
+				case "right":
+					e = PaginationEvent.NEXT_PAGE;
+					_cur_page++;
+					
+					if(_cur_page == _total_pages-1) _rightArrow.disable();
+					if(_leftArrow.disabled) _leftArrow.enable();
+					break;
+			}
+			
+			for(var i:uint=0; i<_numHolder.numChildren; i++)
+			{
+				var nb:NumberButton = _numHolder.getChildAt(i) as NumberButton;
+				_cur_page == i ? nb.selected = true : nb.selected = false;
+			}
+			
+			dispatchEvent( new PaginationEvent(e) );
+	    }
+	}
+}

@@ -1,0 +1,35 @@
+/**
+* @author sgrant
+*/
+
+package com.vday.events
+{
+	import flash.events.Event;
+	
+	public class PaginationEvent extends Event
+	{
+		public static const NEXT_PAGE:String = "onNextPage";
+		public static const PREV_PAGE:String = "onPrevPage";
+		public static const GOTO_PAGE:String = "onGotoPage";
+		
+		public var objInfo:Object = {};
+		
+		
+		public function PaginationEvent(type:String, objInfo:Object = null, bubbles:Boolean = false, cancelable:Boolean = false)
+		{	//trace("new fEvt: " + arguments);
+			super(type, bubbles, cancelable);
+			
+			this.objInfo = objInfo;
+		}
+		
+		public override function clone():Event
+		{
+			return new PaginationEvent(type, objInfo, bubbles, cancelable);
+		}
+		
+		public override function toString():String
+		{
+			return formatToString("PaginationEvent", "type", "objInfo", "bubbles", "cancelable", "eventPhase");
+		}
+	}
+}

@@ -1,0 +1,36 @@
+package com.vday.events
+{
+	import flash.events.Event;
+
+	public class ControlsEvent extends Event
+	{
+		public static const CONTROLS_READY:String = "onControlsReady";
+		public static const PAUSE:String = "onPauseShow";
+		public static const PLAY:String = "onPlayShow";
+		public static const TRACK_OVER:String = "onTrackOver";
+		public static const TRACK_OUT:String = "onTrackOut";
+		public static const TRACK_CLICK:String = "onTrackClick";
+		public static const WHILE_SCRUBBING:String = "onScrubbing";
+		public static const SCRUBBER_UP:String = "onScrubberUp";
+		public static const TOGGLE_SLIDESHOW:String = "onToggleSlideshow";
+		public static const NORMAL_SCREEN:String = "onNormalScreen";
+		
+		public var objInfo:Object = {};
+
+		public function ControlsEvent(type:String,objInfo:Object = null,bubbles:Boolean=false, cancelable:Boolean=false)
+		{
+			super(type, bubbles, cancelable);
+			this.objInfo = objInfo
+		}
+		
+		override public function clone():Event 
+		{
+			return new ControlsEvent(type,objInfo,bubbles,cancelable); 
+		}
+		
+		public override function toString():String
+		{
+			return formatToString("ControlsEvent", "type", "objInfo", "bubbles", "cancelable", "eventPhase");
+		}
+	}
+}

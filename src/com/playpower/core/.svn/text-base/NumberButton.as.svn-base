@@ -1,0 +1,130 @@
+package com.vday.core
+{
+	import com.carlcalderon.arthropod.Debug;
+	import com.gs.TweenLite;
+	import com.vday.events.ShellEvent;
+	
+	import flash.display.MovieClip;
+	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import flash.text.TextField;
+	
+	
+	public class NumberButton extends page_button
+	{
+		private var _id				:Number;
+		private var _hit			:MovieClip;
+		private var _number			:TextField;
+		private var _selected		:Boolean = false;
+		
+		
+		public function NumberButton()
+		{
+		}
+		
+		
+		/*////////////////////////////////////////////////////////////////////////////////////////////
+		 * 	PUBLIC METHODS
+	   //*/
+		/*//
+		 *  INIT
+	   //*/
+		public function init(id:Number):void
+		{
+			_id = id;
+			
+			this.addEventListener(Event.ADDED_TO_STAGE, _onAddedToStage);
+		}
+		
+		public function set selected(b:Boolean):void
+		{
+			_selected = b;
+			
+			var clr:*;
+			b ? clr = Constants.ROLLOVER_COLOR : clr = null;
+			
+			TweenLite.to(_number, .1, {tint:clr});
+		}
+		
+		public function get selected():Boolean
+		{
+			return _selected;
+		}
+		
+		
+		/*//
+		 *  COMMANDS
+	   //*/
+		public function show():void
+		{
+			this.visible = true;
+		}
+		
+		public function hide():void
+		{
+			this.visible = false;
+		}
+		
+		public function destroy():void
+		{
+			_hit.removeEventListener(MouseEvent.MOUSE_OVER, _onMouseOver);
+			_hit.removeEventListener(MouseEvent.MOUSE_OUT, _onMouseOut);
+			_hit.removeEventListener(MouseEvent.CLICK, _onClick);
+		}
+		
+		
+		/*////////////////////////////////////////////////////////////////////////////////////////////
+		 *  PRIVATE METHODS
+	   //*////////////////////////////////////////////////////////////////////////////////////////////
+		/*//
+		 *  COMMANDS
+	   //*/
+	   	
+	   
+	   /*//
+		 *  CALLBACKS
+	   //*/
+	    private function _onAddedToStage($e:Event):void
+	    {
+			this.removeEventListener(Event.ADDED_TO_STAGE, _onAddedToStage);
+			
+			_number = getChildByName("number_txt") as TextField;
+			_number.text = String(_id+1);
+			
+			_hit = getChildByName("hit") as MovieClip;
+			_hit.buttonMode = true;
+			_hit.addEventListener(MouseEvent.MOUSE_OVER, _onMouseOver, false, 0, true);
+			_hit.addEventListener(MouseEvent.MOUSE_OUT, _onMouseOut, false, 0, true);
+			_hit.addEventListener(MouseEvent.CLICK, _onClick, false, 0, true);
+	    }
+	    
+	    private function _onMouseOver($e:MouseEvent):void
+	    {
+			if(!_selected) 
+			{
+				_hit.useHandCursor = true;
+				TweenLite.to(_number, .2, {tint:Constants.ROLLOVER_COLOR});
+			}
+			else
+			{
+				_hit.useHandCursor = false;
+			}
+	    }
+	    
+	    private function _onMouseOut($e:MouseEvent):void
+	    {
+			if(!_selected) TweenLite.to(_number, .2, {tint:null});
+	    }
+	    
+	    private function _onClick($e:MouseEvent):void
+	    {
+			if(!_selected) 
+			{
+				_selected = true;
+				TweenLite.to(_number, .1, {tint:Constants.ROLLOVER_COLOR});
+				dispatchEvent( new ShellEvent(ShellEvent.BUTTON_CLICK, {id:_id}) );
+			}
+	    }
+		
+	}
+}

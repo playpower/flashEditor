@@ -1,0 +1,165 @@
+package com.vday.core
+{
+	import com.carlcalderon.arthropod.Debug;
+	import com.chootka.utils.display.Triangle;
+	import com.gs.TweenLite;
+	import com.vday.events.ShellEvent;
+	
+	import flash.display.Graphics;
+	import flash.display.Sprite;
+	import flash.events.Event;
+	import flash.events.MouseEvent;
+
+
+	public class ArrowButton extends Sprite
+	{
+		private var _w					:Number;
+		private var _h					:Number;
+		private var _clr				:Number;
+		private var _dir				:String;
+		private var _arwBtn				:Triangle;
+		private var _sp					:Sprite;
+		private var _disabled			:Boolean = false;
+		
+		
+		public function ArrowButton()
+		{
+			super();
+		}
+		
+		
+		/*////////////////////////////////////////////////////////////////////////////////////////////
+		 * 	PUBLIC METHODS
+	   //*/
+		/*//
+		 *  INIT
+	   //*/
+		public function init(w:Number, h:Number, clr:Number, dir:String):void
+		{
+			_w = w;
+			_h = h;
+			_clr = clr;
+			_dir = dir;
+			
+			this.addEventListener(Event.ADDED_TO_STAGE, _onAddedToStage);
+		}
+		
+		public function get disabled():Boolean
+		{
+			return _disabled;
+		}
+		
+		
+		/*//
+		 *  COMMANDS
+	   //*/
+		public function show():void
+		{
+			this.visible = true;
+		}
+		
+		public function hide():void
+		{
+			this.visible = false;
+		}
+		
+		public function destroy():void
+		{
+			if(_sp != null)
+			{
+				_sp.removeEventListener(MouseEvent.MOUSE_OVER, _onMouseOver);
+				_sp.removeEventListener(MouseEvent.MOUSE_OUT, _onMouseOut);
+				_sp.removeEventListener(MouseEvent.CLICK, _onClick);
+				
+				this.removeChild(_sp);
+				_sp = null;
+			}
+			
+			if(_arwBtn != null)
+			{
+				this.removeChild(_arwBtn);
+				_arwBtn = null;
+			}
+		}
+		
+		public function disable():void
+		{
+			_disabled = true;
+			TweenLite.to(_arwBtn, .2, {alpha:.2, tint:null});
+		}
+		
+		public function enable():void
+		{
+			_disabled = false;
+			TweenLite.to(_arwBtn, .2, {alpha:1});
+		}
+		
+		
+		/*////////////////////////////////////////////////////////////////////////////////////////////
+		 *  PRIVATE METHODS
+	   //*////////////////////////////////////////////////////////////////////////////////////////////
+		/*//
+		 *  COMMANDS
+	   //*/
+	   private function _createButton():void
+	   {
+	   		_arwBtn = new Triangle(_w, _h, _clr, _dir);	
+			this.addChild(_arwBtn);
+			
+			// make hit area
+			_sp = new Sprite();
+			var g:Graphics = _sp.graphics;
+			g.beginFill(0x0000FF, 0);
+			g.drawRect(_arwBtn.x-5, _arwBtn.y-5, _arwBtn.width+10, _arwBtn.height+10);
+			_sp.buttonMode = true;
+			_sp.useHandCursor = true;
+			_sp.addEventListener(MouseEvent.MOUSE_OVER, _onMouseOver, false, 0, true);
+			_sp.addEventListener(MouseEvent.MOUSE_OUT, _onMouseOut, false, 0, true);
+			_sp.addEventListener(MouseEvent.CLICK, _onClick, false, 0, true);
+			this.addChild(_sp);
+	   }
+	   	
+	   
+	   /*//
+		 *  CALLBACKS
+	   //*/
+	    private function _onAddedToStage($e:Event):void
+	    {
+			this.removeEventListener(Event.ADDED_TO_STAGE, _onAddedToStage);
+			
+			_createButton();
+	    }
+	    
+	    private function _onMouseOver($e:MouseEvent):void
+	    {
+			if(!_disabled) 
+			{
+				_sp.useHandCursor = true;
+				TweenLite.to(_arwBtn, .2, {tint:Constants.ROLLOVER_COLOR});
+			}
+			else
+			{
+				_sp.useHandCursor = false;
+			}
+	    }
+	    
+	    private function _onMouseOut($e:MouseEvent):void
+	    {
+			if(!_disabled) 
+			{
+				_sp.useHandCursor = true;
+				TweenLite.to(_arwBtn, .2, {tint:null});
+			}
+			else
+			{
+				_sp.useHandCursor = false;
+			}
+	    }
+	    
+	    private function _onClick($e:MouseEvent):void
+	    {
+			if(!_disabled) dispatchEvent( new ShellEvent(ShellEvent.BUTTON_CLICK, {id:_dir}) );			
+	    }
+		
+	}
+}

@@ -1,0 +1,132 @@
+package com.vday.core
+{
+	import com.carlcalderon.arthropod.Debug;
+	import com.gs.TweenLite;
+	import com.vday.shell.Shield;
+	import com.vday.core.Constants;
+	
+	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import flash.text.TextField;
+	
+	
+	public class Preloader extends preloader
+	{
+		private var _infoTxt				:TextField;
+		private var _progressTxt			:TextField;
+		private var _shield					:Shield;
+		
+		
+		public function Preloader()
+		{
+		}
+		
+		
+		/*////////////////////////////////////////////////////////////////////////////////////////////
+		 * 	PUBLIC METHODS
+	   //*/
+		/*//
+		 *  INIT
+	   //*/
+		public function init():void
+		{
+			this.addEventListener(Event.ADDED_TO_STAGE, _onAddedToStage, false, 0, true);
+		}
+		
+		
+		/*//
+		 *  COMMANDS
+	   //*/
+		public function show():void
+		{
+			this.visible = true;
+			TweenLite.to(this,.2,{alpha:1});
+		}
+		
+		public function hide():void
+		{
+			TweenLite.to(this, .2, {alpha:0});
+			destroy();
+		}
+		
+		public function destroy():void
+		{
+			this.visible = false;
+			
+			if(_infoTxt)
+			{
+				_infoTxt.text = "";
+				_infoTxt = null;
+			}
+			
+			if(_progressTxt)
+			{
+				_progressTxt.text = "";
+				_progressTxt = null;
+			}
+			
+			if(_shield)
+			{
+				this.removeChild(_shield);
+				_shield = null;
+			}
+		}
+		
+		public function reset():void
+		{
+			if(_progressTxt) _progressTxt.text = "";
+			if(_infoTxt) _infoTxt.text = "";
+		}
+		
+		public function onLoadProgress(data:String, num:Number):void
+		{
+			_infoTxt.text = "BUFFERING \n" + data.toUpperCase();
+			_progressTxt.text = num + "%";
+		}
+	   	
+	   
+	   /*//
+		 *  CALLBACKS
+	   //*/
+	    private function _onAddedToStage($e:Event):void
+	    {
+			this.removeEventListener(Event.ADDED_TO_STAGE, _onAddedToStage);
+			
+			_shield = new Shield();
+			_shield.init(this.stage.stageWidth, this.stage.stageHeight, 0x0C0C0C, .88);
+			_shield.disable();
+			this.addChild(_shield);
+			
+	    	_infoTxt = getChildByName("info_txt") as TextField;
+	    	_progressTxt = getChildByName("progress_txt") as TextField;
+	    	
+	    	_infoTxt.x = (_shield.width - _infoTxt.width) / 2;
+	    	_infoTxt.y = ((_shield.height - _infoTxt.height) / 2) - 100;
+	    	this.addChild(_infoTxt);
+	    	
+	    	_progressTxt.x = _infoTxt.x;
+	    	_progressTxt.y = _infoTxt.y + _infoTxt.height - 18;
+	    	this.addChild(_progressTxt);
+	    	
+			this.stage.addEventListener(Event.RESIZE, _onResize, false, 0, true);
+			_onResize(null);
+	    }
+	    
+	    private function _onResize($e:Event):void
+	    {
+			var sh:Number = this.stage.stageHeight;
+			var sw:Number = this.stage.stageWidth;
+			
+			_shield.width = sw;
+	    	_shield.height = sh;
+	    	_shield.x = 0;
+	    	
+	    	_infoTxt.x = (_shield.width - _infoTxt.width) / 2;
+	    	_infoTxt.y = ((_shield.height - _infoTxt.height) / 2) - 100;
+	    	
+	    	_progressTxt.x = _infoTxt.x;
+	    	_progressTxt.y = _infoTxt.y + _infoTxt.height - 18;
+	    }
+
+	}
+}
