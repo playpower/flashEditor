@@ -12,20 +12,22 @@ To learn more about the PlayPower organization, visit:
 
 == Contributors
 
-Don Miller / NO-CARRIER / www.no-carrier.com \n
-Andrew Reitano / Batsly Adams / www.batslyadams.com \n
-Sarah Grant / chootka / www.chootka.com \n
+Don Miller / NO-CARRIER / www.no-carrier.com
+Andrew Reitano / Batsly Adams / www.batslyadams.com
+Sarah Grant / chootka / www.chootka.com
 
-#Getting Involved
+=begin rdoc
+Getting Involved
 
-#Report bugs or track framework development progress:
+Report bugs or track framework development progress:
 
-    #http://github.com/dima/restfulx_framework/issues
+    http://github.com/dima/restfulx_framework/issues
   
-#Get involved with the community:
+Get involved with the community:
       
-    #http://groups.google.com/group/restfulx-framework
-    
+    http://groups.google.com/group/restfulx-framework
+=end
+
 == License
 
 Copyright (c) 2010 - 2011, released under MIT License
