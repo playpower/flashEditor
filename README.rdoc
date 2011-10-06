@@ -16,15 +16,13 @@ Don Miller / NO-CARRIER / www.no-carrier.com
 Andrew Reitano / Batsly Adams / www.batslyadams.com
 Sarah Grant / chootka / www.chootka.com
 
-##Getting Involved
-
-##Report bugs or track framework development progress:
-
-    ##http://github.com/dima/restfulx_framework/issues
-  
-##Get involved with the community:
-      
-    ##http://groups.google.com/group/restfulx-framework
+#--
+#Getting Involved
+#Report bugs or track framework development progress:
+#http://github.com/dima/restfulx_framework/issues
+#Get involved with the community:
+#http://groups.google.com/group/restfulx-framework
+#++
 
 == License
 
