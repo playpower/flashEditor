@@ -8,7 +8,7 @@ This flash editor lets you create, load, edit and save files for use in NES game
 
 To learn more about the PlayPower organization, visit:
 	
-	http://playpower.org/
+	http://playpower.org
 
 == Contributors
 
@@ -16,7 +16,7 @@ Don Miller / NO-CARRIER / www.no-carrier.com
 Andrew Reitano / Batsly Adams / www.batslyadams.com
 Sarah Grant / chootka / www.chootka.com
 
-/*== Getting Involved
+<!-- == Getting Involved
 
 Report bugs or track framework development progress:
 
@@ -24,7 +24,7 @@ Report bugs or track framework development progress:
   
 Get involved with the community:
       
-    http://groups.google.com/group/restfulx-framework*/
+    http://groups.google.com/group/restfulx-framework -->
     
 == License
 
