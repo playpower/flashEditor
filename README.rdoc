@@ -1,0 +1,31 @@
+= PlayPower Flash Nametable and CHR Editor
+
+== Description
+
+This flash editor lets you create, load, edit and save files for use in NES game development. 
+
+== About
+
+To learn more about the PlayPower organization, visit:
+	
+	http://playpower.org/
+
+== Contributors
+
+Don Miller / NO-CARRIER / www.no-carrier.com
+Andrew Reitano / Batsly Adams / www.batslyadams.com
+Sarah Grant / chootka / www.chootka.com
+
+/*== Getting Involved
+
+Report bugs or track framework development progress:
+
+    http://github.com/dima/restfulx_framework/issues
+  
+Get involved with the community:
+      
+    http://groups.google.com/group/restfulx-framework*/
+    
+== License
+
+Copyright (c) 2010 - 2011, released under MIT License
